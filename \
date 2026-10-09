@@ -1,6 +1,49 @@
 bits 64
 global _start ; define entry point
 
+%macro _loop 3
+	_loop: ; loop that reads each character stored in the rbx register to print it in hexadecimal format
+		movzx eax, byte [rbx]
+
+		; Separate the high-order and low-order bytes in the EAX and ECX registers
+		mov ecx, eax
+		shr eax, 4
+		and ecx, 0x0f
+
+		; Store the values of the RAX and RCX registers in the buffer in hexadecimal format
+		mov al, [r8 + rax]
+		mov cl, [r8 + rcx]
+		mov [buf], al
+		mov [buf+1], cl
+
+		; print the type for the array
+		mov rsi, hexa
+		mov edx, 2
+		call _print
+
+		; print the contents of the hexadecimal buffer
+		mov rsi, buf
+		mov edx, 2
+		call _print
+
+		; increments the loop up to the last character, and exits if the end of the string is reached
+		inc rbx
+		cmp byte [rbx], 0
+		je _end
+
+		; print the comma to separate the hexadecimal values
+		mov rsi, comma
+		mov edx, 2
+		call _print
+
+		; loop
+		jmp _loop
+%endmacro
+
+%macro _print 0
+
+%endmacro
+
 ; declares uninitialized static variables
 section .bss
     buf: resb 2 ; buffer for storing a value in hexadecimal format
@@ -16,42 +59,8 @@ section .text
 		; stores the data tables in the registers
 		lea rbx, [source_data]
 		lea r8, [hex_table]
-		_loop: ; loop that reads each character stored in the rbx register to print it in hexadecimal format
-			movzx eax, byte [rbx]
 
-			; Separate the high-order and low-order bytes in the EAX and ECX registers
-			mov ecx, eax
-			shr eax, 4
-			and ecx, 0x0f
-
-			; Store the values of the RAX and RCX registers in the buffer in hexadecimal format
-			mov al, [r8 + rax]
-			mov cl, [r8 + rcx]
-			mov [buf], al
-			mov [buf+1], cl
-
-			; print the type for the array
-			mov rsi, hexa
-			mov edx, 2
-			call _print
-
-			; print the contents of the hexadecimal buffer
-			mov rsi, buf
-			mov edx, 2
-			call _print
-
-			; increments the loop up to the last character, and exits if the end of the string is reached
-			inc rbx
-			cmp byte [rbx], 0
-			je _end
-
-			; print the comma to separate the hexadecimal values
-			mov rsi, comma
-			mov edx, 2
-			call _print
-
-			; loop
-			jmp _loop
+		_loop hexa, comma, hex_table
 
 		_print: ; Function called to display the contents of the RSI register on standard output
 			mov eax, 1
