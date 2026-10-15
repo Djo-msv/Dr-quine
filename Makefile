@@ -28,14 +28,23 @@ all:
 	@printf "$(WHITE)$(PURPLE)  ➜  $(WHITE)Selection of the program to be tested : $(RESET)"
 	@read programs; \
 	case $$programs in \
-		1) $(MAKE) Collenn;; \
-		2) $(MAKE) Grace;; \
-		3) $(MAKE) Sully;; \
+		1) $(MAKE) program_compilation NAME=Collenn;; \
+		2) $(MAKE) program_compilation NAME=Grace;; \
+		3) $(MAKE) program_compilation NAME=Sully;; \
 		*) \
 			printf "\n$(RED)  ✗ Invalid selection.$(RESET)\n"; \
 			;; \
 	esac
 
+clean:
+	@rm ASM/*.o
+	@rm C/*.o
+	@rm */a.out
+
+fclean: clean
+	@rm ASM/Sully_*.s
+	@rm ASM/Sully_*.c
+	@rm */Collenn */Grace */Sully
 
 # ─────────────────────────────────────────────
 # Header
@@ -67,22 +76,42 @@ welcome:
 	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)1.$(RESET) $(WHITE)Collenn$(RESET)\n"
 	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)2.$(RESET) $(WHITE)Grace$(RESET)\n"
 	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)3.$(RESET) $(WHITE)Sully$(RESET)\n"
-	@printf "$(WHITE)$(MAGENTA)  │$(RESET)\n"
+	@printf "$(WHINL-LC1-42TE)$(MAGENTA)  │$(RESET)\n"
 	@printf "$(WHITE)$(MAGENTA)  └──────────────────────┘$(RESET)\n"
 
 
 # ─────────────────────────────────────────────
-# Programs
+# Compilation
 # ─────────────────────────────────────────────
 
-Collenn:
-	@printf "\n$(GREEN)  ✓ Testing Collenn...$(RESET)\n"
-	# do Stuff
+program_compilation:
+	@mkdir -p logs; \
+	ERROR_CMP=0; \
+	printf "\n$(GREEN)  Compile $(NAME)...$(RESET)\n"; \
+	if clang -Wall -Werror -Wextra C/$(NAME).c -o C/$(NAME) >> logs/$(NAME).log 2>&1; then \
+		printf "$(GREEN)  ✓ $(NAME).c compilation successful$(RESET)\n"; \
+	else \
+		printf "$(RED)  ✗ Failed $(NAME).c compilation$(RESET)\n"; \
+		ERROR_CMP=1; \
+	fi
+	@if nasm -f elf64 ASM/$(NAME).s -o ASM/$(NAME).o >> logs/$(NAME).log 2>&1 && \
+	   ld ASM/$(NAME).o -o ASM/$(NAME) >> logs/$(NAME).log 2>&1; then \
+		printf "$(GREEN)  ✓ $(NAME).s compilation successful$(RESET)\n"; \
+	else \
+		printf "$(RED)  ✗ Failed $(NAME).s compilation$(RESET)\n"; \
+		ERROR_CMP=1; \
+	fi; \
+	if [ "$$ERROR_CMP" -eq 1 ]; then \
+		printf "$(RED)  An error was encountered during compilation.$(RESET)\n"; \
+		cat logs/$(NAME).log; \
+	fi; \
+	rm -f logs/$(NAME).log; \
+	exit "$$ERROR_CMP"
 
-Grace:
-	@printf "\n$(GREEN)  ✓ Testing Grace...$(RESET)\n"
-	# do Stuff
 
-Sully:
-	@printf "\n$(GREEN)  ✓ Testing Sully...$(RESET)\n"
-	# do Stuff
+# ─────────────────────────────────────────────
+# Test
+# ─────────────────────────────────────────────
+
+program_test:
+
