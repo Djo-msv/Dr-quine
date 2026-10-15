@@ -1,36 +1,88 @@
-.PHONY: all
+.PHONY: all header welcome Collenn Grace Sully
 
-header:
-	@echo "\033[0;97m888\033[0;95m8888\033[0;37mb\033[0;35m.\033[0;37m                                 \033[0;97md\033[0;95m8\033[0;35mb\033[0;37m                  \033[0m"
-	@echo "\033[0;97m88\033[0;95m8\033[0;37m  \033[0;95m\"Y88b\033[0;37m                                \033[0;95mY\033[0;35m8\033[0;90mP\033[0;37m                  \033[0m"
-	@echo "\033[0;97m8\033[0;95m88\033[0;37m    \033[0;95m888\033[0;37m                                                     \033[0m"
-	@echo "\033[0;95m88\033[0;35m8\033[0;37m    \033[0;95m88\033[0;35m8\033[0;37m \033[0;97m88\033[0;95m8d8\033[0;35m8\033[0;90m8\033[0;37m       \033[0;97m.d\033[0;95m88888\033[0;37m \033[0;97m88\033[0;95m8\033[0;37m  \033[0;97m8\033[0;95m88\033[0;37m \033[0;97m88\033[0;95m8\033[0;37m \033[0;97m88\033[0;95m888\033[0;35mb.\033[0;37m   \033[0;97m.d\033[0;95m88b.\033[0;37m \033[0m"
-	@echo "\033[0;95m8\033[0;35m88\033[0;37m    \033[0;95m8\033[0;35m88\033[0;37m \033[0;97m8\033[0;95m88P\033[0;35m\"\033[0;37m        \033[0;97md8\033[0;95m8P\"88\033[0;35m8\033[0;37m \033[0;97m8\033[0;95m88\033[0;37m  \033[0;95m88\033[0;35m8\033[0;37m \033[0;97m8\033[0;95m88\033[0;37m \033[0;97m8\033[0;95m88\033[0;37m \033[0;35m\"88b\033[0;37m \033[0;97md\033[0;95m8P\033[0;37m  \033[0;95mY\033[0;35m8\033[0;90mb\033[0m"
-	@echo "\033[0;35m888\033[0;37m    \033[0;35m88\033[0;90m8\033[0;37m \033[0;95m88\033[0;35m8\033[0;37m          \033[0;95m88\033[0;35m8\033[0;37m  \033[0;95m8\033[0;35m88\033[0;37m \033[0;95m888\033[0;37m  \033[0;95m8\033[0;35m88\033[0;37m \033[0;95m8\033[0;35m88\033[0;37m \033[0;95m88\033[0;35m8\033[0;37m  \033[0;35m88\033[0;90m8\033[0;37m \033[0;95m88\033[0;35m8888\033[0;90m88\033[0m"
-	@echo "\033[0;35m888\033[0;37m  \033[0;35m.d8\033[0;90m8P\033[0;37m \033[0;95m8\033[0;35m8\033[0;90m8\033[0;37m          \033[0;95mY8\033[0;35m8b\033[0;37m \033[0;35m888\033[0;37m \033[0;95mY\033[0;35m88b\033[0;37m \033[0;35m88\033[0;90m8\033[0;37m \033[0;35m88\033[0;90m8\033[0;37m \033[0;95m8\033[0;35m88\033[0;37m  \033[0;35m8\033[0;90m88\033[0;37m \033[0;95mY\033[0;35m8b.\033[0;37m    \033[0m"
-	@echo "\033[0;35m88888\033[0;90m88P\"\033[0;37m  \033[0;35m8\033[0;90m88\033[0;37m           \033[0;95m\"\033[0;35mY88888\033[0;37m  \033[0;35m\"Y888\033[0;90m88\033[0;37m \033[0;35m8\033[0;90m88\033[0;37m \033[0;35m8\033[0;90m88\033[0;37m  \033[0;90m888\033[0;37m  \033[0;35m\"Y888\033[0;90m88\033[0m"
-	@echo "\033[0;37m                            \033[0;35m 88\033[0;90m8\033[0;37m                               \033[0m"
-	@echo "\033[0;37m                             \033[0;35m8\033[0;90m88\033[0;37m                               \033[0m"
-	@echo "\033[0;37m                             \033[0;90m888\033[0;37m                               \033[0m"
+MAKEFLAGS += --no-print-directory
 
-welcome:
-	# message de welcome avec plusieur option de program a tester
+
+# ─────────────────────────────────────────────
+# Colors
+# ─────────────────────────────────────────────
+
+RESET  = \033[0m
+WHITE  = \033[0;97m
+GREY   = \033[0;90m
+MAGENTA = \033[0;95m
+PURPLE = \033[0;35m
+GREEN  = \033[0;92m
+RED    = \033[0;91m
+CYAN   = \033[0;96m
+
+
+# ─────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────
 
 all:
-	header
-	welcome
-	read -p "Selection of the program to be tested : " programs;
+	@$(MAKE) header
+	@$(MAKE) welcome
+	@printf "\n"
+	@printf "$(WHITE)$(PURPLE)  ➜  $(WHITE)Selection of the program to be tested : $(RESET)"
+	@read programs; \
 	case $$programs in \
-		1) $(Make) Collenn;;
-		2) $(Make) Grace;;
-		3) $(Make) Sully;;
+		1) $(MAKE) Collenn;; \
+		2) $(MAKE) Grace;; \
+		3) $(MAKE) Sully;; \
+		*) \
+			printf "\n$(RED)  ✗ Invalid selection.$(RESET)\n"; \
+			;; \
 	esac
 
-Collent:
-	#do Stuff
+
+# ─────────────────────────────────────────────
+# Header
+# ─────────────────────────────────────────────
+
+header:
+	@printf "\n"
+	@printf "$(PURPLE)╔════════════════════════════════════════════════════╗$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET)  ___                                               $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET) (  _\`\\                            _                $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET) | | ) | _ __          _ _  _   _ (_)  ___     __   $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET) | | | )( '__)       /'_\` )( ) ( )| |/' _ \`\\ /'__\`\\ $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET) | |_) || |         ( (_) || (_) || || ( ) |(  ___/ $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET) (____/'(_)         \`\\__, |\`\\___/'(_)(_) (_)\`\\____) $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET)              ______    | |                         $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET)             (______)   (_)                         $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)║$(RESET)                                                    $(PURPLE)║$(RESET)\n"
+	@printf "$(PURPLE)╚════════════════════════════════════════════════════╝$(RESET)\n"
+
+
+# ─────────────────────────────────────────────
+# Menu
+# ─────────────────────────────────────────────
+
+welcome:
+	@printf "\n"
+	@printf "$(WHITE)$(MAGENTA)  ┌─ Available programs ─┐$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  │$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)1.$(RESET) $(WHITE)Collenn$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)2.$(RESET) $(WHITE)Grace$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  │$(RESET)  $(GREEN)3.$(RESET) $(WHITE)Sully$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  │$(RESET)\n"
+	@printf "$(WHITE)$(MAGENTA)  └──────────────────────┘$(RESET)\n"
+
+
+# ─────────────────────────────────────────────
+# Programs
+# ─────────────────────────────────────────────
+
+Collenn:
+	@printf "\n$(GREEN)  ✓ Testing Collenn...$(RESET)\n"
+	# do Stuff
 
 Grace:
-	#do Stuff
+	@printf "\n$(GREEN)  ✓ Testing Grace...$(RESET)\n"
+	# do Stuff
 
 Sully:
-	#do Stuff
+	@printf "\n$(GREEN)  ✓ Testing Sully...$(RESET)\n"
+	# do Stuff
