@@ -3,6 +3,7 @@ PROGRAMS = Colleen Grace Sully
 CC       = clang
 CFLAGS   = -Wall -Wextra -Werror
 NASM     = nasm -f elf64
+RUST	 = rustc
 
 MAKEFLAGS += --no-print-directory
 
@@ -59,15 +60,15 @@ clean:
 	@printf "\n$(CYAN)  Cleaning temporary files...$(RESET)\n"
 	@rm -f ASM/*.o
 	@rm -f C/a.out ASM/a.out
-	@rm -f C/*_diff ASM/*_diff
-	@rm -f C/Grace_kid.c ASM/Grace_kid.s
+	@rm -f C/*_diff ASM/*_diff Rust/*_diff
+	@rm -f C/Grace_kid.c ASM/Grace_kid.s Rust/Grace_kid.rs
 	@rm -rf logs
 	@printf "$(GREEN)  ✓ Temporary files removed$(RESET)\n\n"
 
 fclean: clean
 	@printf "$(CYAN)  Removing compiled programs...$(RESET)\n"
-	@rm -f C/Sully_* ASM/Sully_*
-	@rm -f $(addprefix C/,$(PROGRAMS)) $(addprefix ASM/,$(PROGRAMS))
+	@rm -f C/Sully_* ASM/Sully_* Rust/Sully_*
+	@rm -f $(addprefix C/,$(PROGRAMS)) $(addprefix ASM/,$(PROGRAMS)) $(addprefix Rust/,$(PROGRAMS)) 
 	@printf "$(GREEN)  ✓ All generated files removed$(RESET)\n\n"
 re: fclean all
 
@@ -125,6 +126,12 @@ program_compilation:
 		printf "$(RED)  ✗ $(NAME).s compilation failed$(RESET)\n"; \
 		error=1; \
 	fi; \
+	if $(RUST) Rust/$(NAME).rs -o Rust/$(NAME) >> "$(LOG)" 2>&1; then \
+		printf "$(GREEN)  ✓ $(NAME).rs compiled successfully$(RESET)\n"; \
+	else \
+		printf "$(RED)  ✗ $(NAME).rs compilation failed$(RESET)\n"; \
+		error=1; \
+	fi; \
 	if [ "$$error" -ne 0 ]; then \
 		printf "$(RED)  An error occurred during compilation.$(RESET)\n"; \
 		cat "$(LOG)"; \
@@ -173,12 +180,19 @@ diff_maker:
 			printf "\n== $(NAME)_$$i.s ==\n" >> "$(LOG)"; \
 			diff ASM/$(NAME).s ASM/$(NAME)_$$i.s >> "$(LOG)" 2>&1; \
 		done; \
+		(cd Rust && ./$(NAME)) >> "$(LOG)" 2>&1; \
+		$(call wait_for,Rust/$(NAME)_0.rs); \
+		for i in 0 1 2 3 4; do \
+			printf "\n== $(NAME)_$$i.rs ==\n" >> "$(LOG)"; \
+			diff Rust/$(NAME).rs Rust/$(NAME)_$$i.rs >> "$(LOG)" 2>&1; \
+		done; \
 		printf "$(CYAN)  Sully cannot be verified automatically.$(RESET)\n"; \
 		printf "$(CYAN)  Check logs/Sully.log and refer to the subject.$(RESET)\n"; \
 	else \
 		error=0; \
 		$(MAKE) check_run DIR=C EXT=c NAME=$(NAME) || error=1; \
 		$(MAKE) check_run DIR=ASM EXT=s NAME=$(NAME) || error=1; \
+		$(MAKE) check_run DIR=Rust EXT=rs NAME=$(NAME) || error=1; \
 		if [ "$$error" -eq 0 ]; then \
 			printf "$(GREEN)  ✓ $(NAME) successfully self-replicated.$(RESET)\n"; \
 		else \

@@ -4,15 +4,16 @@ fn do_stuff() {
 }
 
 fn main() {
-	// comment present inside the main function
+    // comment present inside the main function
     let src = r#"// comment present outside of the program
-    fd do_stuff() {
-    for _i int 1..101 {}
-    }
+fn do_stuff() {
+    for _i in 1..101 {}
+}
 
-    fn main() {
-	// comment present inside the main function
+fn main() {
+    // comment present inside the main function
     let src = r$"?"$;
+    do_stuff();
     println!("{}", src.replace('\u{24}', "$").replace('\u{3f}', src));
 }"#;
     do_stuff();
