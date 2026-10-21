@@ -19,8 +19,9 @@ fn main() -> std::io::Result<()> {
     let mut file = File::create(filename.clone())?;
     write!(file, "{}", src.replace('\u{25}', &i.to_string()).replace('\u{24}', "$").replace('\u{5e}', src))?;
 
-    let _ = Command::new("rustc").args(&[filename, "-o".to_string(), "Sully".to_string()]).status();
-    _ = Command::new("./Sully").status();
+    let _ = Command::new("rustc").args(&[filename.clone()]).status();
+    let truncated: String = filename.chars().take(7).collect();
+    let _ = Command::new(format!("./{}", truncated)).status();
     Ok(())
 }
 "#;
@@ -32,7 +33,8 @@ fn main() -> std::io::Result<()> {
     let mut file = File::create(filename.clone())?;
     write!(file, "{}", src.replace('\u{25}', &i.to_string()).replace('\u{24}', "#").replace('\u{5e}', src))?;
 
-    let _ = Command::new("rustc").args(&[filename, "-o".to_string(), "Sully".to_string()]).status();
-    _ = Command::new("./Sully").status();
+    let _ = Command::new("rustc").args(&[filename.clone()]).status();
+    let truncated: String = filename.chars().take(7).collect();
+    let _ = Command::new(format!("./{}", truncated)).status();
     Ok(())
 }
