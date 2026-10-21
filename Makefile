@@ -5,6 +5,12 @@ CFLAGS   = -Wall -Wextra -Werror
 NASM     = nasm -f elf64
 RUST	 = rustc
 
+ifeq ($(VALG),1)
+    VALG_CMD = valgrind --track-fds=yes --trace-children=yes
+else
+    VALG_CMD =
+endif
+
 MAKEFLAGS += --no-print-directory
 
 .PHONY: all clean fclean re header welcome program_compilation diff_maker \
@@ -113,7 +119,7 @@ program_compilation:
 	: > "$(LOG)"; \
 	error=0; \
 	printf "\n$(GREEN)  Compiling $(NAME)...$(RESET)\n"; \
-	if $(CC) $(CFLAGS) C/$(NAME).c -o C/$(NAME) >> "$(LOG)" 2>&1; then \
+	if $(VALG_CMD) $(CC) $(CFLAGS) C/$(NAME).c -o C/$(NAME) >> "$(LOG)" 2>&1; then \
 		printf "$(GREEN)  ✓ $(NAME).c compiled successfully$(RESET)\n"; \
 	else \
 		printf "$(RED)  ✗ $(NAME).c compilation failed$(RESET)\n"; \
